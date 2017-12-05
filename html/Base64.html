@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script>
+        var img = "img/6.jpg";//imgurl 就是你的图片路径
+        var image = new Image();
+        image.src = img;
+        $(function () {
+            function getBase64Image(img) {
+                var canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, img.width, img.height);
+                var ext = img.src.substring(img.src.lastIndexOf(".") + 1).toLowerCase();
+                var dataURL = canvas.toDataURL("image/" + ext);
+                return dataURL;
+            }
+
+
+            var base64 = getBase64Image(image);
+            image.onload = function () {
+                console.info(base64);
+            }
+
+            $("#but").click(function () {
+                console.info(base64);
+                $.ajax({
+                        url: 'http://localhost:8090/test',
+                        type: "post",
+                        dataType: "json",
+                        data: {val:base64},
+                        success: function (result) {
+                            alert(result);
+                        },
+                        error: function () {
+
+                            console.info('失败...')
+                        }
+                    })
+            })
+        })
+    </script>
+</head>
+<body>
+<button id="but">点击我</button>
+</body>
+</html>

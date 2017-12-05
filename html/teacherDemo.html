@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script type="text/javascript" src="js/vue-resource.js"></script>
+    <script>
+        $(function () {
+            var v = new Vue({
+                el:'#app',
+                data:{
+                    items:[]
+                },
+                methods:{
+                    getInfo:function () {
+                        this.$http.get('http://localhost:8090/node1').then(
+                            function (result) {
+                                // 成功的回调函数
+                                this.items = result.data;
+                            }
+                        )
+                    }
+                },
+                ready:function () {
+                    this.getInfo();
+                }
+            })
+
+            // 设置1.5秒执行一次代码
+            var i = 0;
+            var timeId = window.setInterval(function () {
+                $.get('http://localhost:8090/node1',{},function (items) {
+                    console.info(items[0].user_name);
+                })
+                i++;
+                if(5 == i){
+                    window.clearInterval(timeId);
+                    console.info("停止轮询");
+                }
+
+            },1500)
+        })
+    </script>
+</head>
+<body id="app">
+<p>数据展示</p>
+    <div v-for="item in items">
+        <p>{{item.user_name}}</p>
+        <p>{{item.phone}}</p>
+        <p>{{item.head_img}}</p>
+    </div>
+</body>
+</html>
